@@ -1,5 +1,11 @@
-my $password_domain = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#\$%^&*()-_";
-my $password_length = 15;
+# length = 80
+my $password_domain = "abcdefghijklmnopqrstuvwxyzABCDEFGHIJKLMNOPQRSTUVWXYZ0123456789!@#\$%^&*()-_+~<>.?";
+my $password_length = 30;
+
+# combos = password_domain^password_length = 80^30 = 1.237940039×10^(57)
+# entropy = log2(1.237940039×10^(57)) =  189.657842846 bits
+
+
 my $key_file = "key";
 my $store_file = "store";
 
@@ -117,6 +123,57 @@ if ($command eq "-a" or $command eq "--add") {
     }
 
     print "\n";
+
+
+    # calc the entropy
+    my $lowers = 0;
+    my $uppers = 0;
+    my $digits = 0;
+    my $symbols = 0;
+
+    srand(hex($hashed_seed));
+    for (my $i = 0; $i < $password_length; $i++) {
+        my $r = int(rand(length($password_domain)));
+        my $c = substr($password_domain, $r, 1);
+
+        # check lower case
+        if ($c =~ /[a-z]/) {
+            $lowers++;
+            # print "l: $c\n";
+        } elsif ($c =~ /[A-Z]/) {
+            # check upper case
+            $uppers++;
+            # print "u: $c\n";
+        } elsif ($c =~ /[0-9]/) {
+            # check numbers case
+            $digits++;
+            # print "d: $c\n";
+        } else {
+            # check symbols case
+            $symbols++;
+            # print "s: $c\n";
+        }
+    }
+
+    my $comb = 0;
+    $comb += $lowers? 26: 0;
+    $comb += $uppers? 26: 0;
+    $comb += $digits? 10: 0;
+    $comb += $symbols? 18: 0;
+    
+
+    print "Length: $password_length\n";
+    print "Charset Size: $comb characters\n";
+
+    $comb = $comb**$password_length;
+    print "Combos: $comb\n";
+
+    my $entropy = log($comb) / log(2);
+    print "Entropy: $entropy bits\n";
+
+
+    print "\n";
+
 }
 
 
