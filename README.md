@@ -58,8 +58,18 @@ gmail:my.acount@gmail.com:abc123:57ac6ac524f45091ff8f44cfade5bd5acd7c3e1737e7c5f
     * enter the same domain name (i.e. `gmail:my.acount@gmail.com`)
     * the same password is generated
 
+
+
+## Commands
+* No args: First time with no args, generates the master key
+* **-a**, **--add**: add new domain:username
+    * `perl passMaster.pl -a facebook:myacount`
+* **ls**, **--list**: list all domains
+* **-g**, **--generate**: generate a password
+    * `perl passMaster.pl -g facebook:myacount`
+---
 **IMPORTANT!** YOU MUST HAVE A BACKUP FOR THE MASTER KEY (key.gpg file), IF YOU LOST THIS KEY, ALL YOUR PASSWORDS ARE LOST. THIS KEY IS USED FOR SALTING YOUR PASSWORDS.
 
 ---
-Please feel free to advice/suggest
+Please feel free to advice or suggest.
 
