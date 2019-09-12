@@ -12,7 +12,7 @@ This is a password manager script written in Perl. The purpose of this script is
 * Stroing passwords (high entropy value)
 * Domain/username specific
 * Passwords are not stored (it is generated on the fly)
-* Domains/usernames are stored if needed (Optional)
+* Domains/usernames are stored in `store.gpg file` if needed (Optional)
 * Generating a master key of size 256 bytes (one time)
     * Master key is a random number obtained from kernel noise (Hardware noise `/dev/random`)
     * Master key is stored in file key.gpg encrypted with AES256
@@ -62,7 +62,7 @@ gmail:my.acount@gmail.com:abc123:57ac6ac524f45091ff8f44cfade5bd5acd7c3e1737e7c5f
 
 ## Commands
 * No args: First time with no args, generates the master key
-* **-a**, **--add**: add new domain:username
+* **-a**, **--add**: add new domain:username to `store.gpg file`
     * `perl passMaster.pl -a facebook:myacount`
 * **ls**, **--list**: list all domains
 * **-g**, **--generate**: generate a password
