@@ -14,16 +14,18 @@ This is a password manager script written in Perl. The purpose of this script is
 * Passwords are not stored (it is generated on the fly)
 * Domains/usernames are stored if needed (Optional)
 * Generating a master key of size 256 bytes (one time)
-    * Master key is a random number obtained from kernel noise (Hardware noise)
+    * Master key is a random number obtained from kernel noise (Hardware noise `/dev/random`)
     * Master key is stored in file key.gpg encrypted with AES256
+        * Using the gpg tool in linux
+        * Command: `gpg --cipher-algo AES256 --symmetric`
     * Master key is used for salting to generate new passwords
 
-## Passwords Generator Method
+## Passwords Generating Method
 Assuming that user has already run `perl passMaster.pl` at the first time. User must enter the master password and then the master key is generated. Assuming the user master password is `abc123` and the master key is
 ```
 57ac6ac524f45091ff8f44cfade5bd5acd7c3e1737e7c5fdeebb4f66739400fdb91e68b64ae8807e51c6c137e57b80316549155b4c552d257dbe35bc6e523342d12defc268298f4adb538e9a8d9a6cb977fb10f5a040f2f8cd6a8454e295f3a456ee2e2caaae52322220c0b66d14a5b2022ba0f2642bcef10d7951447d11450e89fbcb01191a00c646e12a64fb14485055df0475807d7813aea28245b3b14469b4f04ff6ab1f70480bf238a3dff62e493f345e224c13ec46d22cff7fb011e524434880dc1c700daf55cd13c478a29b57b3d223687de1f56f3c43250b883fc1b0dd7e799173a67932dfb3c669ca3efec0f660505a8b43bb055b6b05e34cd35309
 ```
-The `key.gpg` file is generated which is encrypted using AES256 algorithm where the password is the user master password `abc123`. Assuming the user wants to generate a password for his gmail account where he/she could use gmail or gmail:username. By running: 
+The `key.gpg` file is generated which is encrypted using AES256 algorithm where the password is the user master password `abc123`. Assuming the user wants to generate a password for his gmail account where he/she could use `gmail` or `gmail:username`. By running: 
 ```
 perl passMaster.pl -g gmail:my.acount@gmail.com
 ```
@@ -35,14 +37,14 @@ Charset Size: 80 characters
 Combos: 1.23794003928538e+57
 Entropy: 189.657842846621 bits
 ```
-A password of length 30 characters (length can be changed) is generated (`8qsp4XK9ytV+VxnFg(h7Vb~7fYp5z8`).
+A password of length 30 characters (length can be changed) is generated (`8qsp4XK9ytV+VxnFg(h7Vb~7fYp5z8`). Note, the domain format `gmail:username` is up to the user, it can be any string format.
 
 The way of generating the password is as follows: -
 * Generating salted password `domain:MasterPassword:MasterKey`
 ```
 gmail:my.acount@gmail.com:abc123:57ac6ac524f45091ff8f44cfade5bd5acd7c3e1737e7c5fdeebb4f66739400fdb91e68b64ae8807e51c6c137e57b80316549155b4c552d257dbe35bc6e523342d12defc268298f4adb538e9a8d9a6cb977fb10f5a040f2f8cd6a8454e295f3a456ee2e2caaae52322220c0b66d14a5b2022ba0f2642bcef10d7951447d11450e89fbcb01191a00c646e12a64fb14485055df0475807d7813aea28245b3b14469b4f04ff6ab1f70480bf238a3dff62e493f345e224c13ec46d22cff7fb011e524434880dc1c700daf55cd13c478a29b57b3d223687de1f56f3c43250b883fc1b0dd7e799173a67932dfb3c669ca3efec0f660505a8b43bb055b6b05e34cd35309
 ```
-* The salted password is hashed by SHA256 using `sha256sum` tool in linux.
+* The salted password is hashed using SHA256 algorithm, `sha256sum` tool in linux is used.
 * The hashed value is used as seed value for the random function.
     * First 8 bytes are used of the hashed value to avoid integer overflow
 * Random function is called (30 or password length) times
@@ -56,6 +58,7 @@ gmail:my.acount@gmail.com:abc123:57ac6ac524f45091ff8f44cfade5bd5acd7c3e1737e7c5f
     * enter the same domain name (i.e. `gmail:my.acount@gmail.com`)
     * the same password is generated
 
+**IMPORTANT!** YOU MUST HAVE A BACKUP FOR THE MASTER KEY (key.gpg file), IF YOU LOST THIS KEY, ALL YOUR PASSWORDS ARE LOST. THIS KEY IS USED FOR SALTING YOUR PASSWORDS.
 
 ---
 Please feel free to advice/suggest
